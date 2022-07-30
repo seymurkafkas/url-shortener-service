@@ -1,9 +1,19 @@
-import express from "express";
+import express, { Express, Request, Response } from "express";
+import bodyParser from "body-parser";
+import helmet from "helmet";
+import dotenv from "dotenv";
 
-const app = express();
-const port = 5000;
+dotenv.config();
 
-app.get("/", (_, res) => {
-  res.status(200).send();
+const PORT = process.env.PORT || 3000;
+const app: Express = express();
+
+app.use(helmet());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get("/", (req: Request, res: Response) => {
+  res.send("<h1>Hello!</h1>");
 });
-app.listen(port, () => console.log(`Running on port ${port}`));
+
+app.listen(PORT, () => console.log(`Running on ${PORT}`));
