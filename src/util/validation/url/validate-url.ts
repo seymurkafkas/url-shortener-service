@@ -1,4 +1,4 @@
-export default function isValidUrl(urlString: string) {
+export default function validateUrl(urlString: string) {
   const urlPattern = new RegExp(
     "^(https?:\\/\\/)?" + // validate protocol
       "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + //  domain name
@@ -8,5 +8,5 @@ export default function isValidUrl(urlString: string) {
       "(\\#[-a-z\\d_]*)?$",
     "i"
   ); // validate fragment locator
-  return urlPattern.test(urlString);
+  if (!urlPattern.test(urlString)) throw new Error("Invalid URL");
 }
