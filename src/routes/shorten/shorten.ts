@@ -4,10 +4,8 @@ import ShortenSchema from "../../schemas/shorten";
 import JsonSchema from "jsonschema";
 
 const router = Router();
-
 const SchemaValidator = JsonSchema.Validator;
 const schemaValidator = new SchemaValidator();
-
 const schemaValidation = (req: Request, res: Response, next: NextFunction) => {
   try {
     schemaValidator.validate(req.body, ShortenSchema, {
@@ -18,7 +16,6 @@ const schemaValidation = (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 };
-
 const urlValidation = (req: Request, res: Response, next: NextFunction) => {
   try {
     UrlValidation.validateUrl(req.body.url);
@@ -27,7 +24,6 @@ const urlValidation = (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 };
-
 const validationSteps = [schemaValidation, urlValidation];
 
 router.post("/", ...validationSteps, (req, res) => {
