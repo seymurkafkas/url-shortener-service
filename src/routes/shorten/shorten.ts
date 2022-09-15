@@ -2,8 +2,13 @@ import { Router, Request, Response, NextFunction } from "express";
 import * as UrlValidation from "../../util/validation/url";
 import ShortenSchema from "../../schemas/shorten";
 import JsonSchema from "jsonschema";
+import { app } from "../../app";
+import { generateShortUrl } from "../../util/hash";
 
 const router = Router();
+
+const dbService = app.dbService;
+
 const SchemaValidator = JsonSchema.Validator;
 const schemaValidator = new SchemaValidator();
 const schemaValidation = (req: Request, res: Response, next: NextFunction) => {
@@ -26,10 +31,11 @@ const urlValidation = (req: Request, res: Response, next: NextFunction) => {
 };
 const validationSteps = [schemaValidation, urlValidation];
 
-router.post("/", ...validationSteps, (req, res) => {
-  const requestedUrl = req.body;
-  const responseData = `<h1>${requestedUrl.url} url route<h1>`;
-  res.send(responseData);
+router.post("/", ...validationSteps, async (req, res) => {
+  const { url: extendedUrl } = req.body;
+  const shortUrl = generateShortUrl(extendedUrl);
+  await dbService.insertLinks(shortUrl, extendedUrl);
+  res.send(shortUrl);
 });
 
 export default router;

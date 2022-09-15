@@ -1,6 +1,9 @@
 import { Router, Request, Response, NextFunction } from "express";
 import ExtendSchema from "../../schemas/extend";
 import JsonSchema from "jsonschema";
+import { app } from "../../app";
+
+const dbService = app.dbService;
 
 const router = Router();
 const SchemaValidator = JsonSchema.Validator;
@@ -17,10 +20,10 @@ const schemaValidation = (req: Request, res: Response, next: NextFunction) => {
 };
 const validationSteps = [schemaValidation];
 
-router.post("/", ...validationSteps, (req: Request, res: Response) => {
-  const requestedUrl = req.body;
-  const responseData = `<h1>${requestedUrl.shortUrl} extend route<h1>`;
-  res.send(responseData);
+router.post("/", ...validationSteps, async (req: Request, res: Response) => {
+  const { shortUrl } = req.body;
+  const extendedUrl = await dbService.fetchExtendedLink(shortUrl);
+  res.send(extendedUrl);
 });
 
 export default router;
