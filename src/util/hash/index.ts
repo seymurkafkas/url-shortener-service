@@ -1,0 +1,1 @@
+export { generateShortUrl } from "./hash";
